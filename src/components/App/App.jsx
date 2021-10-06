@@ -1,12 +1,12 @@
-import React from 'react'
-import CartItem from '../CartItem/CartItem'
-import "./App.css"
+import React from "react";
+import Cart from "../Cart/Cart";
+import "./App.css";
 function App() {
-    return (
-        <div>
-            <CartItem />
-        </div>
-    )
+  return (
+    <div>
+      <Cart />
+    </div>
+  );
 }
 
-export default App
+export default App;

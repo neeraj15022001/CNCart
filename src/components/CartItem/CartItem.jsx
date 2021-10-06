@@ -8,11 +8,30 @@ class CartItem extends React.Component {
     this.state = {
       price: 100,
       title: "Coffee",
-      quantity: "0",
+      quantity: 0,
       img: "https://images.pexels.com/photos/7362647/pexels-photo-7362647.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
     };
   }
   deleteItem = () => {
+    console.log(this.state);
+  };
+  increaseQuantity = () => {
+    this.setState((prevState) => {
+      return {
+        quantity: prevState.quantity + 1,
+      };
+    });
+    console.log(this.state);
+  };
+  decreaseQuantity = () => {
+    if (this.state.quantity > 0) {
+      this.setState((prevState) => {
+        return {
+          quantity: prevState.quantity - 1,
+        };
+      });
+    }
+
     console.log(this.state);
   };
   render() {
@@ -44,10 +63,16 @@ class CartItem extends React.Component {
           </div>
         </div>
         <div className="card-actions">
-          <button className="card-actions-button">
+          <button
+            className="card-actions-button"
+            onClick={this.increaseQuantity}
+          >
             <PlusLg color="black" />
           </button>
-          <button className="card-actions-button">
+          <button
+            className="card-actions-button"
+            onClick={this.decreaseQuantity}
+          >
             <DashLg color="black" />
           </button>
           <button className="card-actions-button" onClick={this.deleteItem}>

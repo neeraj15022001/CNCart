@@ -3,15 +3,6 @@ import "./CartItem.css";
 import { PlusLg, DashLg, TrashFill } from "react-bootstrap-icons";
 
 class CartItem extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      price: 100,
-      title: "Coffee",
-      quantity: 0,
-      img: "https://images.pexels.com/photos/7362647/pexels-photo-7362647.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-    };
-  }
   deleteItem = () => {
     console.log(this.state);
   };
@@ -35,7 +26,7 @@ class CartItem extends React.Component {
     console.log(this.state);
   };
   render() {
-    const { price, title, quantity, img } = this.state;
+    const {price, title, quantity, img} = this.props.product
     return (
       <div className="card">
         <div className="card-body">

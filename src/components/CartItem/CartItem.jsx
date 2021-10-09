@@ -3,30 +3,10 @@ import "./CartItem.css";
 import { PlusLg, DashLg, TrashFill } from "react-bootstrap-icons";
 
 class CartItem extends React.Component {
-  deleteItem = () => {
-    console.log(this.state);
-  };
-  increaseQuantity = () => {
-    this.setState((prevState) => {
-      return {
-        quantity: prevState.quantity + 1,
-      };
-    });
-    console.log(this.state);
-  };
-  decreaseQuantity = () => {
-    if (this.state.quantity > 0) {
-      this.setState((prevState) => {
-        return {
-          quantity: prevState.quantity - 1,
-        };
-      });
-    }
-
-    console.log(this.state);
-  };
   render() {
-    const {price, title, quantity, img} = this.props.product
+    const { product, increaseQuantity, decreaseQuantity, onDelete } =
+      this.props;
+    const { price, title, quantity, img } = product;
     return (
       <div className="card">
         <div className="card-body">
@@ -56,17 +36,20 @@ class CartItem extends React.Component {
         <div className="card-actions">
           <button
             className="card-actions-button"
-            onClick={this.increaseQuantity}
+            onClick={() => increaseQuantity(product)}
           >
             <PlusLg color="black" />
           </button>
           <button
             className="card-actions-button"
-            onClick={this.decreaseQuantity}
+            onClick={() => decreaseQuantity(product)}
           >
             <DashLg color="black" />
           </button>
-          <button className="card-actions-button" onClick={this.deleteItem}>
+          <button
+            className="card-actions-button"
+            onClick={() => onDelete(product.id)}
+          >
             <TrashFill color="white" />
           </button>
         </div>

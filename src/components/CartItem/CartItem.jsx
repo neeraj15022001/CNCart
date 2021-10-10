@@ -2,13 +2,10 @@ import React from "react";
 import "./CartItem.css";
 import { PlusLg, DashLg, TrashFill } from "react-bootstrap-icons";
 
-class CartItem extends React.Component {
-  render() {
-    const { product, increaseQuantity, decreaseQuantity, onDelete } =
-      this.props;
-    const { price, title, quantity, img } = product;
-    return (
-      <div className="card">
+const CartItem = ({ product, increaseQuantity, decreaseQuantity, onDelete }) => {
+  const { price, title, quantity, img } = product;
+  return (
+    <div className="card">
         <div className="card-body">
           <div className="card-image">
             <div
@@ -54,8 +51,17 @@ class CartItem extends React.Component {
           </button>
         </div>
       </div>
-    );
-  }
+  )
 }
+// class CartItem extends React.Component {
+//   render() {
+//     const  =
+//       this.props;
+    
+//     return (
+      
+//     );
+//   }
+// }
 
 export default CartItem;

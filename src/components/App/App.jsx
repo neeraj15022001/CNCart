@@ -4,12 +4,13 @@ import Navbar from "../Navbar/Navbar";
 import "./App.css";
 import {
   collection,
-  getDocs,
   getFirestore,
   query,
   onSnapshot,
   doc,
   setDoc,
+  updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
 class App extends React.Component {
   constructor() {
@@ -20,20 +21,10 @@ class App extends React.Component {
     };
   }
   componentDidMount() {
-    const getDocuments = async () => {
-      const db = getFirestore();
-      const querySnapshot = await getDocs(collection(db, "products"));
-      let products = [];
-      querySnapshot.forEach((doc) => {
-        console.log(doc.id, doc.data());
-        products.push(doc.data());
-      });
-      this.setState({ products, loading: false });
-    };
     const getDocumentsRealtime = async () => {
       const db = getFirestore();
       const q = query(collection(db, "products"));
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      onSnapshot(q, (querySnapshot) => {
         const products = [];
         querySnapshot.forEach((doc) => {
           products.push(doc.data());
@@ -43,31 +34,38 @@ class App extends React.Component {
     };
     getDocumentsRealtime();
   }
+  componentWillUnmount() {}
   addDataToDB = async () => {
     const db = getFirestore();
     // Add a new document in collection "cities"
-    await setDoc(doc(db, "products", "2"), {
+    await setDoc(doc(db, "products", "5"), {
       price: 500,
-      title: "Cappauccinio2",
+      title: "Coffee",
       quantity: 0,
       img: "https://static01.nyt.com/images/2015/10/02/fashion/02CAPP3SUB/02CAPP3SUB-jumbo.jpg",
       id: 5,
     });
   };
-  handleIncreaseQuantity = (product) => {
-    const { products } = this.state;
-    const index = products.indexOf(product);
-    
+  handleIncreaseQuantity = async (product) => {
+    const db = getFirestore();
+    const docRef = doc(db, "products", `${product.id}`);
+    await updateDoc(docRef, {
+      quantity: product.quantity + 1,
+    });
   };
 
-  handleDecreaseQuantity = (product) => {
-    const { products } = this.state;
-    const index = products.indexOf(product);
-    
+  handleDecreaseQuantity = async (product) => {
+    const db = getFirestore();
+    const docRef = doc(db, "products", `${product.id}`);
+    if (product.quantity > 0) {
+      await updateDoc(docRef, {
+        quantity: product.quantity - 1,
+      });
+    }
   };
-  handleDelete = (id) => {
-    const { products } = this.state;
-    const newProducts = products.filter((item) => item.id !== id);
+  handleDelete = async (id) => {
+    const db = getFirestore();
+    await deleteDoc(doc(db, "products", `${id}`));
   };
   totalItemsInCart = () => {
     let totalItems = 0;

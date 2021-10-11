@@ -2,60 +2,72 @@ import React from "react";
 import Cart from "../Cart/Cart";
 import Navbar from "../Navbar/Navbar";
 import "./App.css";
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  query,
+  onSnapshot,
+  doc,
+  setDoc,
+} from "firebase/firestore";
 class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      products: [
-        {
-          price: 100,
-          title: "Coffee",
-          quantity: 0,
-          img: "https://images.pexels.com/photos/7362647/pexels-photo-7362647.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-          id: 1,
-        },
-        {
-          price: 200,
-          title: "Frappe",
-          quantity: 0,
-          img: "https://images.pexels.com/photos/7362647/pexels-photo-7362647.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-          id: 2,
-        },
-        {
-          price: 300,
-          title: "Mocha",
-          quantity: 0,
-          img: "https://images.pexels.com/photos/7362647/pexels-photo-7362647.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-          id: 3,
-        },
-      ],
+      products: [],
+      loading: true,
     };
   }
+  componentDidMount() {
+    const getDocuments = async () => {
+      const db = getFirestore();
+      const querySnapshot = await getDocs(collection(db, "products"));
+      let products = [];
+      querySnapshot.forEach((doc) => {
+        console.log(doc.id, doc.data());
+        products.push(doc.data());
+      });
+      this.setState({ products, loading: false });
+    };
+    const getDocumentsRealtime = async () => {
+      const db = getFirestore();
+      const q = query(collection(db, "products"));
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const products = [];
+        querySnapshot.forEach((doc) => {
+          products.push(doc.data());
+        });
+        this.setState({ products, loading: false });
+      });
+    };
+    getDocumentsRealtime();
+  }
+  addDataToDB = async () => {
+    const db = getFirestore();
+    // Add a new document in collection "cities"
+    await setDoc(doc(db, "products", "2"), {
+      price: 500,
+      title: "Cappauccinio2",
+      quantity: 0,
+      img: "https://static01.nyt.com/images/2015/10/02/fashion/02CAPP3SUB/02CAPP3SUB-jumbo.jpg",
+      id: 5,
+    });
+  };
   handleIncreaseQuantity = (product) => {
     const { products } = this.state;
     const index = products.indexOf(product);
-    products[index].quantity += 1;
-    this.setState({
-      products,
-    });
+    
   };
 
   handleDecreaseQuantity = (product) => {
     const { products } = this.state;
     const index = products.indexOf(product);
-    if (products[index].quantity !== 0) {
-      products[index].quantity -= 1;
-    }
-    this.setState({
-      products,
-    });
+    
   };
   handleDelete = (id) => {
     const { products } = this.state;
     const newProducts = products.filter((item) => item.id !== id);
-    this.setState({
-      products: newProducts,
-    });
   };
   totalItemsInCart = () => {
     let totalItems = 0;
@@ -75,6 +87,8 @@ class App extends React.Component {
     return (
       <div>
         <Navbar totalItemsInCart={this.totalItemsInCart} />
+        <button onClick={this.addDataToDB}>Add Product</button>
+        {this.state.loading && <h1>Loading Products...</h1>}
         <Cart
           products={this.state.products}
           handleIncreaseQuantity={this.handleIncreaseQuantity}

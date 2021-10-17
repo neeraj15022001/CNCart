@@ -19,12 +19,13 @@ class App extends React.Component {
       products: [],
       loading: true,
     };
+    this.snapshotListener = null;
   }
   componentDidMount() {
     const getDocumentsRealtime = async () => {
       const db = getFirestore();
       const q = query(collection(db, "products"));
-      onSnapshot(q, (querySnapshot) => {
+      this.snapshotListener = onSnapshot(q, (querySnapshot) => {
         const products = [];
         querySnapshot.forEach((doc) => {
           products.push(doc.data());
@@ -34,7 +35,9 @@ class App extends React.Component {
     };
     getDocumentsRealtime();
   }
-  componentWillUnmount() {}
+  componentWillUnmount() {
+    this.snapshotListener();
+  }
   addDataToDB = async () => {
     const db = getFirestore();
     // Add a new document in collection "cities"
